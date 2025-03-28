@@ -1394,3 +1394,258 @@ test('no tags - default tag', () => {
         ]
     );
 });
+
+test('optional parameters should be in collection and required parameters directly displayed', () => {
+    const paths = {
+        '/api/entities': {
+            get: {
+                operationId: 'EntityController_list',
+                summary: 'List all entities',
+                parameters: [
+                    {
+                        name: 'required_param',
+                        required: true,
+                        in: 'query',
+                        description: 'This is a required parameter',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                    {
+                        name: 'optional_param',
+                        required: false,
+                        in: 'query',
+                        description: 'This is an optional parameter',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                ],
+                tags: ['🖥️ Entity'],
+            },
+            post: {
+                operationId: 'EntityController_create',
+                summary: 'Create entity',
+                requestBody: {
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    required_body: {
+                                        type: 'string',
+                                        description: 'Required body parameter'
+                                    },
+                                    optional_body: {
+                                        type: 'string',
+                                        description: 'Optional body parameter'
+                                    }
+                                },
+                                required: ['required_body']
+                            }
+                        }
+                    }
+                },
+                tags: ['🖥️ Entity'],
+            }
+        },
+    };
+
+    const parser = new N8NPropertiesBuilder({paths}, {
+        operation: new CustomOperationParser(),
+        resource: new CustomResourceParser(),
+    });
+    const result = parser.build();
+
+    // Find the GET operation fields (excluding resource and operation selections and notice)
+    const getOpFields = result.filter(field => 
+        field.displayOptions?.show?.operation?.[0] === 'List' && 
+        field.type !== 'options' && 
+        field.type !== 'notice'
+    );
+
+    // Find the POST operation fields (excluding resource and operation selections and notice)
+    const postOpFields = result.filter(field => 
+        field.displayOptions?.show?.operation?.[0] === 'Create' && 
+        field.type !== 'options' && 
+        field.type !== 'notice'
+    );
+
+    // Verify GET operation has required parameter directly displayed
+    const requiredQueryParam = getOpFields.find(field => field.name === 'required_param');
+    expect(requiredQueryParam).toBeDefined();
+    if (requiredQueryParam) {
+        expect(requiredQueryParam.required).toBe(true);
+    }
+
+    // Verify GET operation has optional parameters in collection
+    const queryCollection = getOpFields.find(field => field.name === 'additionalQueryParameters');
+    expect(queryCollection).toBeDefined();
+    if (queryCollection) {
+        expect(queryCollection.type).toBe('collection');
+        
+        // Verify the optional parameter is in the collection
+        const options = queryCollection.options || [];
+        const optionalParamInCollection = options.find(option => option.name === 'optional_param');
+        expect(optionalParamInCollection).toBeDefined();
+    }
+
+    // Verify POST operation has required body field directly displayed
+    const requiredBodyField = postOpFields.find(field => field.name === 'required_body');
+    expect(requiredBodyField).toBeDefined();
+    if (requiredBodyField) {
+        expect(requiredBodyField.required).toBe(true);
+    }
+
+    // Verify POST operation has optional body fields in collection
+    const bodyCollection = postOpFields.find(field => field.name === 'additionalBodyFields');
+    expect(bodyCollection).toBeDefined();
+    if (bodyCollection) {
+        expect(bodyCollection.type).toBe('collection');
+        
+        // Verify the optional body parameter is in the collection
+        const options = bodyCollection.options || [];
+        const optionalBodyInCollection = options.find(option => option.name === 'optional_body');
+        expect(optionalBodyInCollection).toBeDefined();
+    }
+});
+
+test('optional parameters in collection fields test', () => {
+    const paths = {
+        '/api/test-endpoint': {
+            get: {
+                operationId: 'test_operation',
+                summary: 'Test Operation',
+                parameters: [
+                    {
+                        name: 'required_param',
+                        required: true,
+                        in: 'query',
+                        description: 'This is a required parameter',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                    {
+                        name: 'optional_param',
+                        required: false,
+                        in: 'query',
+                        description: 'This is an optional parameter',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                ],
+                tags: ['Test'],
+            },
+            post: {
+                operationId: 'test_create',
+                summary: 'Test Create',
+                requestBody: {
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    required_body: {
+                                        type: 'string',
+                                        description: 'Required body parameter'
+                                    },
+                                    optional_body: {
+                                        type: 'string',
+                                        description: 'Optional body parameter'
+                                    }
+                                },
+                                required: ['required_body']
+                            }
+                        }
+                    }
+                },
+                tags: ['Test'],
+            }
+        },
+    };
+
+    const parser = new N8NPropertiesBuilder({paths}, {
+        operation: new CustomOperationParser(),
+        resource: new CustomResourceParser(),
+    });
+    const result = parser.build();
+    
+    // First, let's check that we have the resource and operations
+    const resourceProperty = result.find(field => field.name === 'resource');
+    expect(resourceProperty).toBeDefined();
+    
+    // Find the actual operation names from the operation options
+    const operationProperty = result.find(field => 
+        field.name === 'operation' && 
+        field.displayOptions?.show?.resource?.[0] === 'Test'
+    );
+    expect(operationProperty).toBeDefined();
+    
+    // Get the operation names from the options
+    const operationNames = operationProperty?.options?.map(op => (op as any).value) || [];
+    expect(operationNames.length).toBeGreaterThan(0);
+    
+    // Now use these names to find fields
+    const getOpName = operationNames.find(name => name.includes('Operation') || name.includes('operation'));
+    const postOpName = operationNames.find(name => name.includes('Create') || name.includes('create'));
+    
+    // Check that we found the operation names
+    expect(getOpName).toBeDefined();
+    expect(postOpName).toBeDefined();
+    
+    if (getOpName) {
+        // Check for required query parameter (should be directly in fields)
+        const requiredQueryParam = result.find(field => 
+            field.name === 'required_param' && 
+            field.displayOptions?.show?.operation?.[0] === getOpName
+        );
+        expect(requiredQueryParam).toBeDefined();
+        if (requiredQueryParam) {
+            expect(requiredQueryParam.required).toBe(true);
+        }
+        
+        // Check for optional parameters collection
+        const queryCollection = result.find(field => 
+            field.name === 'additionalQueryParameters' && 
+            field.displayOptions?.show?.operation?.[0] === getOpName
+        );
+        expect(queryCollection).toBeDefined();
+        if (queryCollection) {
+            expect(queryCollection.type).toBe('collection');
+            
+            // Optional parameters should be in the options array of the collection
+            const options = queryCollection.options || [];
+            const optionalParam = options.find(opt => opt.name === 'optional_param');
+            expect(optionalParam).toBeDefined();
+        }
+    }
+    
+    if (postOpName) {
+        // Check for required body parameter
+        const requiredBodyParam = result.find(field => 
+            field.name === 'required_body' && 
+            field.displayOptions?.show?.operation?.[0] === postOpName
+        );
+        expect(requiredBodyParam).toBeDefined();
+        if (requiredBodyParam) {
+            expect(requiredBodyParam.required).toBe(true);
+        }
+        
+        // Check for optional body parameters collection
+        const bodyCollection = result.find(field => 
+            field.name === 'additionalBodyFields' && 
+            field.displayOptions?.show?.operation?.[0] === postOpName
+        );
+        expect(bodyCollection).toBeDefined();
+        if (bodyCollection) {
+            expect(bodyCollection.type).toBe('collection');
+            
+            // Optional body parameters should be in the options array of the collection
+            const options = bodyCollection.options || [];
+            const optionalBodyParam = options.find(opt => opt.name === 'optional_body');
+            expect(optionalBodyParam).toBeDefined();
+        }
+    }
+});

@@ -93,15 +93,82 @@ export class BaseOperationsCollector implements OpenAPIVisitor {
 
     /**
      * Parse fields from operation, both parameters and request body
+     * Separates required and optional fields
      */
     parseFields(operation: OpenAPIV3.OperationObject, context: OperationContext) {
         const fields = [];
-        const parameterFields = this.n8nNodeProperties.fromParameters(operation.parameters)
-        fields.push(...parameterFields);
+        
+        // Handle parameters
+        if (operation.parameters) {
+            const requiredParameters: INodeProperties[] = [];
+            const optionalParameters: INodeProperties[] = [];
+            
+            // Get all parameters
+            const allParameters = this.n8nNodeProperties.fromParameters(operation.parameters);
+            
+            // Split into required and optional
+            for (const param of allParameters) {
+                if (param.required) {
+                    requiredParameters.push(param);
+                } else {
+                    optionalParameters.push(param);
+                }
+            }
+            
+            // Add required parameters directly
+            fields.push(...requiredParameters);
+            
+            // Add optional parameters in a collection field
+            if (optionalParameters.length > 0) {
+                const additionalFieldsOption: INodeProperties = {
+                    displayName: 'Additional Query Parameters',
+                    name: 'additionalQueryParameters',
+                    type: 'collection',
+                    placeholder: 'Add Field',
+                    default: {},
+                    options: optionalParameters,
+                    description: 'Optional query parameters that can be added',
+                };
+                
+                fields.push(additionalFieldsOption);
+            }
+        }
 
+        // Handle request body
         try {
-            const bodyFields = this.n8nNodeProperties.fromRequestBody(operation.requestBody)
-            fields.push(...bodyFields);
+            const bodyFields = this.n8nNodeProperties.fromRequestBody(operation.requestBody);
+            
+            if (bodyFields.length > 0) {
+                const requiredBodyFields: INodeProperties[] = [];
+                const optionalBodyFields: INodeProperties[] = [];
+                
+                // Split body fields into required and optional
+                for (const field of bodyFields) {
+                    if (field.required) {
+                        requiredBodyFields.push(field);
+                    } else {
+                        optionalBodyFields.push(field);
+                    }
+                }
+                
+                // Add required body fields directly
+                fields.push(...requiredBodyFields);
+                
+                // Add optional body fields in a collection field
+                if (optionalBodyFields.length > 0) {
+                    const additionalBodyFieldsOption: INodeProperties = {
+                        displayName: 'Additional Body Fields',
+                        name: 'additionalBodyFields',
+                        type: 'collection',
+                        placeholder: 'Add Field',
+                        default: {},
+                        options: optionalBodyFields,
+                        description: 'Optional body fields that can be added',
+                    };
+                    
+                    fields.push(additionalBodyFieldsOption);
+                }
+            }
         } catch (error) {
             const data = {...this.bindings, error: `${error}`}
             // @ts-ignore
@@ -115,6 +182,7 @@ export class BaseOperationsCollector implements OpenAPIVisitor {
             }
             fields.push(notice)
         }
+        
         return fields;
     }
 
