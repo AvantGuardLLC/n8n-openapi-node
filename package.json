@@ -1,5 +1,5 @@
 {
-  "name": "@AvantGuardLLC/n8n-openapi-node",
+  "name": "@avantguardllc/n8n-openapi-node",
   "version": "0.1.4",
   "description": "Turn OpenAPI specs into n8n node",
   "main": "dist/src/index.js",
