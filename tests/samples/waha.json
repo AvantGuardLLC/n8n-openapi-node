@@ -4117,7 +4117,7 @@
   },
   "info": {
     "title": "WAHA - WhatsApp HTTP API",
-    "description": "WhatsApp HTTP API that you can run in a click!<br/><br/>Learn more:<ul><li><a href=\"https://waha.devlike.pro/\" target=\"_blank\">Documentation</a></li><li><a href=\"https://waha.devlike.pro/docs/how-to/engines/#features\" target=\"_blank\">Supported features in engines</a></li><li><a href=\"https://github.com/devlikeapro/waha\" target=\"_blank\">GitHub - WAHA Core</a></li><li><a href=\"https://github.com/devlikeapro/waha-plus\" target=\"_blank\">GitHub - WAHA Plus</a></li><li><a href=\"/dashboard\">WAHA Dashboard</a></li><li><a href=\"https://waha.devlike.pro/docs/how-to/waha-dashboard\">WAHA Dashboard Documentation</a></li></ul><p>Support the project and get WAHA Plus version!</p><ul><li><a href=\"https://waha.devlike.pro/docs/how-to/plus-version/\" target=\"_blank\">WAHA Plus</a></li><li><a href=\"https://patreon.com/wa_http_api/\" target=\"_blank\">Patreon</a></li><li><a href=\"https://boosty.to/wa-http-api/\" target=\"_blank\">Boosty</a></li><li><a href=\"https://portal.devlike.pro/\" target=\"_blank\">Patron Portal</a></li></ul>",
+    "description": "WhatsApp HTTP API that you can run in a click!<br/><br/>Learn more:<ul><li><a href=\"https://waha.devlike.pro/\" target=\"_blank\">Documentation</a></li><li><a href=\"https://waha.devlike.pro/docs/how-to/engines/#features\" target=\"_blank\">Supported features in engines</a></li><li><a href=\"https://github.com/AvantGuardLLC/waha\" target=\"_blank\">GitHub - WAHA Core</a></li><li><a href=\"https://github.com/AvantGuardLLC/waha-plus\" target=\"_blank\">GitHub - WAHA Plus</a></li><li><a href=\"/dashboard\">WAHA Dashboard</a></li><li><a href=\"https://waha.devlike.pro/docs/how-to/waha-dashboard\">WAHA Dashboard Documentation</a></li></ul><p>Support the project and get WAHA Plus version!</p><ul><li><a href=\"https://waha.devlike.pro/docs/how-to/plus-version/\" target=\"_blank\">WAHA Plus</a></li><li><a href=\"https://patreon.com/wa_http_api/\" target=\"_blank\">Patreon</a></li><li><a href=\"https://boosty.to/wa-http-api/\" target=\"_blank\">Boosty</a></li><li><a href=\"https://portal.devlike.pro/\" target=\"_blank\">Patron Portal</a></li></ul>",
     "version": "2024.9.2",
     "contact": {}
   },
@@ -4857,7 +4857,7 @@
           },
           "url": {
             "type": "string",
-            "example": "https://github.com/devlikeapro/waha/raw/core/examples/dev.likeapro.jpg"
+            "example": "https://github.com/AvantGuardLLC/waha/raw/core/examples/dev.likeapro.jpg"
           }
         },
         "required": [
@@ -4972,7 +4972,7 @@
           },
           "url": {
             "type": "string",
-            "example": "https://github.com/devlikeapro/waha/raw/core/examples/dev.likeapro.opus"
+            "example": "https://github.com/AvantGuardLLC/waha/raw/core/examples/dev.likeapro.opus"
           }
         },
         "required": [
@@ -5028,7 +5028,7 @@
           },
           "url": {
             "type": "string",
-            "example": "https://github.com/devlikeapro/waha/raw/core/examples/video.mp4"
+            "example": "https://github.com/AvantGuardLLC/waha/raw/core/examples/video.mp4"
           }
         },
         "required": [

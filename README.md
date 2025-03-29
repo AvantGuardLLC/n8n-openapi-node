@@ -1,4 +1,4 @@
-# @devlikeapro/n8n-openapi-node
+# @AvantGuardLLC/n8n-openapi-node
 
 
 ![openapi logo](openapi.png)
@@ -6,7 +6,7 @@
 
 Turn Your **OpenAPI** (**Swagger**) spec into a **n8n node**!
 
-[![npm version](https://img.shields.io/npm/v/@devlikeapro/n8n-openapi-node.svg)](https://www.npmjs.com/package/@devlikeapro/n8n-openapi-node)
+[![npm version](https://img.shields.io/npm/v/@AvantGuardLLC/n8n-openapi-node.svg)](https://www.npmjs.com/package/@AvantGuardLLC/n8n-openapi-node)
 
 ---
 
@@ -46,7 +46,7 @@ but you can use this package to generate most of the code.
 
 👉 We recommend using one of repo for the `n8n-nodes-<yourproject>` package:
 
-- https://github.com/devlikeapro/n8n-nodes-petstore - Petstore example generated from OpenAPI v3 spec
+- https://github.com/AvantGuardLLC/n8n-nodes-petstore - Petstore example generated from OpenAPI v3 spec
 - https://github.com/n8n-io/n8n-nodes-starter - Official n8n nodes starter template
 
 Find more real-world examples in [Use Cases](#use-cases) section.
@@ -55,14 +55,14 @@ Find more real-world examples in [Use Cases](#use-cases) section.
 
 ## Installation
 
-Add `@devlikeapro/n8n-openapi-node` as dependency
+Add `@AvantGuardLLC/n8n-openapi-node` as dependency
 
 ```bash
-npm install @devlikeapro/n8n-openapi-node
+npm install @AvantGuardLLC/n8n-openapi-node
 # OR
-pnpm add @devlikeapro/n8n-openapi-node
+pnpm add @AvantGuardLLC/n8n-openapi-node
 # OR
-yarn add @devlikeapro/n8n-openapi-node
+yarn add @AvantGuardLLC/n8n-openapi-node
 ```
 
 
@@ -75,7 +75,7 @@ yarn add @devlikeapro/n8n-openapi-node
 
 ```typescript
 import {INodeType, INodeTypeDescription, NodeConnectionType} from 'n8n-workflow';
-import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@devlikeapro/n8n-openapi-node';
+import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@AvantGuardLLC/n8n-openapi-node';
 import * as doc from './openapi.json'; // <=== Your OpenAPI v3 spec
 
 const config: N8NPropertiesBuilderConfig = {}
@@ -167,7 +167,7 @@ It gets `operation.parameters` from OpenAPI spec and converts them to **Headers*
 You can override the way how to extract **Resource** from **OpenAPI Tag** defining your custom `IResourceParser`:
 
 ```typescript
-import {IResourceParser} from '@devlikeapro/n8n-openapi-node';
+import {IResourceParser} from '@AvantGuardLLC/n8n-openapi-node';
 
 export class CustomResourceParser {
   CUSTOM_DESCRIPTION = {
@@ -201,7 +201,7 @@ The default implementation you can find in [src/ResourceParser.ts](src/ResourceP
 ```typescript
 import {OpenAPIV3} from 'openapi-types';
 import * as lodash from 'lodash';
-import {DefaultResourceParser} from '@devlikeapro/n8n-openapi-node';
+import {DefaultResourceParser} from '@AvantGuardLLC/n8n-openapi-node';
 
 export class CustomResourceParser extends DefaultResourceParser {
   value(tag: OpenAPIV3.TagObject): string {
@@ -213,7 +213,7 @@ export class CustomResourceParser extends DefaultResourceParser {
 Then you use it in `N8NPropertiesBuilder` in `config.resource`:
 
 ```typescript
-import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@devlikeapro/n8n-openapi-node';
+import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@AvantGuardLLC/n8n-openapi-node';
 import * as doc from './openapi.json';
 
 import {CustomResourceParser} from './CustomResourceParser';
@@ -225,7 +225,7 @@ const parser = new N8NPropertiesBuilder(doc, config);
 const properties = parser.build()
 ```
 
-Find real example in [@devlikeapro/n8n-nodes-waha](https://github.com/devlikeapro/n8n-nodes-waha) repository.
+Find real example in [@AvantGuardLLC/n8n-nodes-waha](https://github.com/AvantGuardLLC/n8n-nodes-waha) repository.
 
 ## Operation
 
@@ -233,7 +233,7 @@ You can override the way how to extract **Operation** from **OpenAPI Operation**
 `IOperationParser`:
 
 ```typescript
-import {IOperationParser} from '@devlikeapro/n8n-openapi-node';
+import {IOperationParser} from '@AvantGuardLLC/n8n-openapi-node';
 
 export class CustomOperationParser implements IOperationParser {
   shouldSkip(operation: OpenAPIV3.OperationObject, context: OperationContext): boolean {
@@ -268,7 +268,7 @@ Alternatively, you can use `DefaultOperationParser` and override only the method
 The default implementation you can find in [src/OperationParser.ts](src/OperationParser.ts)
 
 ```typescript
-import {DefaultOperationParser} from '@devlikeapro/n8n-openapi-node';
+import {DefaultOperationParser} from '@AvantGuardLLC/n8n-openapi-node';
 
 export class CustomOperationParser extends DefaultOperationParser {
   name(operation: OpenAPIV3.OperationObject, context: OperationContext): string {
@@ -285,7 +285,7 @@ export class CustomOperationParser extends DefaultOperationParser {
 Then you use it in `N8NPropertiesBuilder` in `config.operation`:
 
 ```typescript
-import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@devlikeapro/n8n-openapi-node';
+import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@AvantGuardLLC/n8n-openapi-node';
 import * as doc from './openapi.json';
 import {CustomOperationParser} from './CustomOperationParser';
 
@@ -296,7 +296,7 @@ const parser = new N8NPropertiesBuilder(doc, config);
 const properties = parser.build()
 ```
 
-Find real example in [@devlikeapro/n8n-nodes-waha](https://github.com/devlikeapro/n8n-nodes-waha) repository.
+Find real example in [@AvantGuardLLC/n8n-nodes-waha](https://github.com/AvantGuardLLC/n8n-nodes-waha) repository.
 
 ## Fields
 
@@ -306,7 +306,7 @@ Here's example how you can override `session` field value (which has `'default'`
 suitable `=${$json.session}}`:
 
 ```typescript
-import {Override} from '@devlikeapro/n8n-openapi-node';
+import {Override} from '@AvantGuardLLC/n8n-openapi-node';
 
 export const customDefaults: Override[] = [
   {
@@ -328,7 +328,7 @@ Then you use it in `N8NPropertiesBuilder`:
 
 ```typescript
 
-import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@devlikeapro/n8n-openapi-node';
+import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@AvantGuardLLC/n8n-openapi-node';
 import * as doc from './openapi.json';
 import {customDefaults} from './customDefaults';
 
@@ -336,19 +336,19 @@ const parser = new N8NPropertiesBuilder(doc);
 const properties = parser.build(customDefaults);
 ```
 
-Find real example in [@devlikeapro/n8n-nodes-waha](https://github.com/devlikeapro/n8n-nodes-waha) repository.
+Find real example in [@AvantGuardLLC/n8n-nodes-waha](https://github.com/AvantGuardLLC/n8n-nodes-waha) repository.
 
 # Use Cases
 
 Here's n8n community nodes generated from OpenAPI specifications you can use for reference:
 
-- [@devlikeapro/n8n-nodes-petstore](https://github.com/devlikeapro/n8n-nodes-petstore) - Petstore example generated from
+- [@AvantGuardLLC/n8n-nodes-petstore](https://github.com/AvantGuardLLC/n8n-nodes-petstore) - Petstore example generated from
   [Petstore openapi.json](https://github.com/OAI/OpenAPI-Specification/blob/main/examples/v3.0/petstore.yaml)
-- [@devlikeapro/n8n-nodes-chatwoot](https://github.com/devlikeapro/n8n-nodes-chatwoot) - ChatWoot n8n community node
+- [@AvantGuardLLC/n8n-nodes-chatwoot](https://github.com/AvantGuardLLC/n8n-nodes-chatwoot) - ChatWoot n8n community node
   from
   [https://www.chatwoot.com/developers/api/](https://www.chatwoot.com/developers/api/). Defines credentials as well (
   manually)
-- [@devlikeapro/n8n-nodes-waha](https://github.com/devlikeapro/n8n-nodes-waha) - **WAHA** - Self-hosted **WhatsApp HTTP
+- [@AvantGuardLLC/n8n-nodes-waha](https://github.com/AvantGuardLLC/n8n-nodes-waha) - **WAHA** - Self-hosted **WhatsApp HTTP
   API** you can run in a click!
 
 # FAQ
@@ -367,16 +367,16 @@ Paste your yaml spec to https://editor.swagger.io and select **File > Save as JS
 ## How to set up credentials from OpenAPI v3 spec?
 
 Right now you need to define it manually.
-Check [ChatWoot node](https://github.com/devlikeapro/n8n-nodes-chatwoot)
+Check [ChatWoot node](https://github.com/AvantGuardLLC/n8n-nodes-chatwoot)
 for an example.
 
 ## Why it doesn't work with my OpenAPI spec?
 
-Open [a new issue](https://github.com/devlikeapro/n8n-openapi-node/issues) and please attach
+Open [a new issue](https://github.com/AvantGuardLLC/n8n-openapi-node/issues) and please attach
 your openapi.json file and describe the problem (logs are helpful too).
 
 # Support the project
 
 You can support the project by donating a small amount to help us improve the project even more.
 
-- [https://patreon.com/devlikeapro](https://patreon.com/devlikeapro)
+- [https://patreon.com/AvantGuardLLC](https://patreon.com/AvantGuardLLC)
