@@ -47,8 +47,10 @@ export class DefaultOperationParser implements IOperationParser {
             return lodash.startCase(operation.operationId)
         }
 
-        if (operation.summary) {
-            return lodash.startCase(operation.summary)
+        const summary = operation.summary || context.path.summary
+
+        if (summary) {
+            return lodash.camelCase(summary)
         }
 
         return context.method.toUpperCase() + " " + context.pattern
