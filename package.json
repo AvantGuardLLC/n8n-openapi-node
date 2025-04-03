@@ -1,6 +1,6 @@
 {
   "name": "@avantguardllc/n8n-openapi-node",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Turn OpenAPI specs into n8n node",
   "main": "dist/src/index.js",
   "module": "dist/src/index.js",
