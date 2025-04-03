@@ -44,7 +44,7 @@ export class DefaultOperationParser implements IOperationParser {
 
     name(operation: OpenAPIV3.OperationObject, context: OperationContext): string {
         if (operation.operationId) {
-            return lodash.startCase(operation.operationId)
+            return operation.operationId
         }
 
         const summary = operation.summary || context.path.summary
@@ -58,8 +58,7 @@ export class DefaultOperationParser implements IOperationParser {
 
     value(operation: OpenAPIV3.OperationObject, context: OperationContext): string {
         let name = this.name(operation, context)
-        // replace all non-alphanumeric characters with '-'
-        return name.replace(/[^a-zA-Z0-9 ]/g, '-');
+        return name;
     }
 
     action(operation: OpenAPIV3.OperationObject, context: OperationContext): string {
