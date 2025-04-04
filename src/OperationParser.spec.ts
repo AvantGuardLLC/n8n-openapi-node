@@ -20,10 +20,10 @@ describe("DefaultOperationParser", () => {
         },
       };
 
-      expect(parser.value(operation, context)).toBe("Get User Profile");
+      expect(parser.name(operation, context)).toBe("Get User Profile");
     });
 
-    it("should use summary (camelCase) when operationId is missing", () => {
+    it("should use summary (startCase) when operationId is missing", () => {
       const operation: OpenAPIV3.OperationObject = {
         summary: "Get User Profile",
         responses: {},
@@ -36,7 +36,7 @@ describe("DefaultOperationParser", () => {
         },
       };
 
-      expect(parser.value(operation, context)).toBe("getUserProfile");
+      expect(parser.name(operation, context)).toBe("Get User Profile");
     });
 
     it("should use method and path when both operationId and summary are missing", () => {
@@ -49,7 +49,7 @@ describe("DefaultOperationParser", () => {
         path: {},
       };
 
-      expect(parser.value(operation, context)).toBe(
+      expect(parser.name(operation, context)).toBe(
         `${OpenAPIV3.HttpMethods.GET.toUpperCase()} /users/profile`
       );
     });
