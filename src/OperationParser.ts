@@ -68,7 +68,7 @@ export class DefaultOperationParser implements IOperationParser {
     const summary = operation.summary || context.path.summary;
 
     if (summary) {
-      return lodash.camelCase(summary);
+      return lodash.startCase(summary);
     }
 
     return `${context.method.toUpperCase()} ${context.pattern}`;
@@ -79,14 +79,16 @@ export class DefaultOperationParser implements IOperationParser {
     context: OperationContext
   ): string {
     const name = this.name(operation, context);
-    return name;
+    return name.replace(/[^a-zA-Z0-9 ]/g, "-");
   }
 
   action(
     operation: OpenAPIV3.OperationObject,
     context: OperationContext
   ): string {
-    return operation.summary || this.name(operation, context);
+    return (
+      operation.summary || context.path.summary || this.name(operation, context)
+    );
   }
 
   description(
