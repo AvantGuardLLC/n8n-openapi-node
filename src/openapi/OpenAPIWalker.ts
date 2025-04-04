@@ -84,7 +84,7 @@ export class OpenAPIWalker {
         path
       ] as OpenAPIV3.PathItemObject;
       let method: string;
-      let operation: OpenAPIV3.OperationObject;
+      let operation: any;
       for ([method, operation] of Object.entries(pathItem)) {
         if (!HttpMethods.includes(method)) {
           continue;
