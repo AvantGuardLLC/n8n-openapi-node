@@ -64,9 +64,8 @@ export class BaseOperationsCollector implements OpenAPIVisitor {
       operation: {
         pattern: context.pattern,
         method: context.method,
-        operationId:
-          operation.operationId ??
-          lodash.camelCase(operation.summary ?? context.path.summary),
+        operationId: operation.operationId,
+        summary: operation.summary,
       },
     };
     this.bindings = bindings;
