@@ -6,7 +6,7 @@
 
 Turn Your **OpenAPI** (**Swagger**) spec into a **n8n node**!
 
-[![npm version](https://img.shields.io/npm/v/@AvantGuardLLC/n8n-openapi-node.svg)](https://www.npmjs.com/package/@AvantGuardLLC/n8n-openapi-node)
+[![npm version](https://img.shields.io/npm/v/@avantguardllc/n8n-openapi-node.svg)](https://www.npmjs.com/package/@avantguardllc/n8n-openapi-node)
 
 ---
 
