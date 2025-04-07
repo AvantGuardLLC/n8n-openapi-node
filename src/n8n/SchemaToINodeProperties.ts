@@ -168,11 +168,30 @@ export class N8NINodeProperties {
             return [];
         }
         body = this.refResolver.resolve<OpenAPIV3.RequestBodyObject>(body)
-        const regexp = /application\/json.*/
-        const content = findKey(body.content, regexp)
-        if (!content) {
-            throw new Error(`No '${regexp}' content found`);
+        
+        // Define supported content types
+        const contentTypes = [
+            /application\/json.*/,
+            /application\/x-www-form-urlencoded.*/,
+            /multipart\/form-data.*/
+        ];
+        
+        let content;
+        let contentType;
+        
+        // Try to find the content for any of the supported content types
+        for (const typeRegexp of contentTypes) {
+            content = findKey(body.content, typeRegexp);
+            if (content) {
+                contentType = Object.keys(body.content).find(key => typeRegexp.test(key));
+                break;
+            }
         }
+        
+        if (!content) {
+            throw new Error(`No supported content type found. Supported types: application/json, application/x-www-form-urlencoded, multipart/form-data`);
+        }
+        
         const requestBodySchema = content.schema!!;
         const schema = this.refResolver.resolve<OpenAPIV3.SchemaObject>(requestBodySchema)
         if (!schema.properties && schema.type != 'object' && schema.type != 'array') {
@@ -187,14 +206,24 @@ export class N8NINodeProperties {
                 required: !!schema.required
             }
             const field = combine(fieldDefaults, fieldPropertyKeys)
-            field.routing = {
-                request: {
-                    body: '={{ JSON.parse($value) }}'
-                },
-            };
+            
+            if (contentType && contentType.includes('multipart/form-data')) {
+                // For multipart/form-data handling, binary data might need special handling
+                field.routing = {
+                    request: {
+                        body: '={{ $value }}'
+                    },
+                };
+            } else {
+                field.routing = {
+                    request: {
+                        body: '={{ JSON.parse($value) }}'
+                    },
+                };
+            }
+            
             fields.push(field);
         }
-
 
         const properties = schema.properties;
         for (const key in properties) {
@@ -204,16 +233,30 @@ export class N8NINodeProperties {
                 required: schema.required && schema.required?.includes(key),
             }
             const field = combine(fieldDefaults, fieldPropertyKeys)
-            if (field.type === 'json') {
-                field.routing = {
-                    send: {
-                        "property": key,
-                        "propertyInDotNotation": false,
-                        "type": "body",
-                        "value": '={{ JSON.parse($value) }}'
-                    },
-                };
-            } else {
+            
+            if (contentType && contentType.includes('application/json')) {
+                // JSON handling
+                if (field.type === 'json') {
+                    field.routing = {
+                        send: {
+                            "property": key,
+                            "propertyInDotNotation": false,
+                            "type": "body",
+                            "value": '={{ JSON.parse($value) }}'
+                        },
+                    };
+                } else {
+                    field.routing = {
+                        send: {
+                            "property": key,
+                            "propertyInDotNotation": false,
+                            "type": "body",
+                            "value": '={{ $value }}'
+                        },
+                    };
+                }
+            } else if (contentType && contentType.includes('application/x-www-form-urlencoded')) {
+                // Form URL encoded handling - each field goes as a form parameter
                 field.routing = {
                     send: {
                         "property": key,
@@ -222,7 +265,32 @@ export class N8NINodeProperties {
                         "value": '={{ $value }}'
                     },
                 };
+            } else if (contentType && contentType.includes('multipart/form-data')) {
+                // Multipart form data handling
+                // Special case for file uploads
+                const resolvedProperty = this.refResolver.resolve<OpenAPIV3.SchemaObject>(property);
+                if (resolvedProperty.type === 'string' && resolvedProperty.format === 'binary') {
+                    field.type = 'string';
+                    field.routing = {
+                        send: {
+                            "property": key,
+                            "propertyInDotNotation": false,
+                            "type": "body",
+                            "value": '={{ $binary[$value] }}'
+                        },
+                    };
+                } else {
+                    field.routing = {
+                        send: {
+                            "property": key,
+                            "propertyInDotNotation": false,
+                            "type": "body",
+                            "value": '={{ $value }}'
+                        },
+                    };
+                }
             }
+            
             fields.push(field);
         }
         return fields;
